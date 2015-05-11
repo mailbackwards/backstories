@@ -1,0 +1,9 @@
+beautifulsoup4==4.3.2
+Flask==0.10.1
+Flask-Cors==2.0.1
+networkx==1.9.1
+newspaper==0.0.9.8
+pymongo==3.0.1
+PyPubSub==3.3.0
+requests==2.3.0
+tldextract==1.6

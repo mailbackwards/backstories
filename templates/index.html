@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Backstori.es</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .checkbox:hover {
+        background-color: #eeeeee;
+      }
+      #backstory-response {
+        font-weight: bold;
+      }
+      .story-headline {
+        font-size: 18px;
+      }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+  <div id="content" class="container">
+    <div class="row-fluid">
+      <div class="span12">
+        <h1>Backstori.es</h1>
+
+        <h4>Crawl link</h4>
+        <div class="searchbox">
+          <form action="" name="search">
+            Pick a URL to start crawling: <input type="search" name="ingest-url">
+            <input type="submit">
+          </form>
+        </div>
+
+        <h4>Make backstory</h4>
+        <div class="searchbox">
+          <form action="" name="search">
+            Pick a URL to make a backstory from: <input type="search" name="query-url">
+            <input type="submit">
+          </form>
+        </div>
+
+        <br />
+
+        {% for story in stories %}
+          <div class="checkbox">
+            <input type="checkbox" value="">
+            <div>
+              <span class="story-date"><i>{{ story.publish_date_formatted }}</i></span><br/>
+              <span class="story-headline"><strong>{{ story.headline }}</strong></span><br/>
+              <span class="story-lede">{{ story.lede }}</span><br/><br/>
+              <i>(Spider level: <strong>{{ story.path_length }}</strong>; Degree: <strong>{{ story.degree }}</strong>)</i><br/>
+              <img class="story-img" src="{{ story.img_url }}" height="200" width="300" />
+            </div>
+          </div><br/>
+          <hr />
+        {% endfor %}
+
+        <input type="submit" value="Make backstory" class="btn btn-default" id="make-backstory"></input>
+        <br/><br/>
+        <div id="backstory-response"></div>
+        <br/>
+
+      </div> <!-- .span12 -->
+    </div>
+  </div> <!-- #content -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    function toggle_checkbox() {
+      if ($(this).children('input').is(':checked')) {
+        $(this).css('background-color', '#ffffff');
+        $(this).children('input').prop('checked', false);
+      } else {
+        $(this).css('background-color', '#a9a9a9');
+        $(this).children('input').prop('checked', true);
+      }
+    }
+    function generate_backstory() {
+      var checkedStories = [];
+      $('.checkbox').each(function(){
+        if ($(this).children('input').is(':checked')) {
+
+          var storyDate = $(this).find('.story-date').text();
+          var storyHeadline = $(this).find('.story-headline').text();
+          var storyLede = $(this).find('.story-lede').text();
+          var storyImg = $(this).find('.story-img').attr('src');
+
+          checkedStories.push({
+            'date': storyDate,
+            'headline': storyHeadline,
+            'lede': storyLede,
+            'img': storyImg
+          });
+        }
+      });
+
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:5000/stupefy.json",
+        data: JSON.stringify({'stories': checkedStories}),
+        success: function(data) {
+          $('#backstory-response').html(JSON.stringify(data));
+        },
+        contentType: 'application/json;charset=UTF-8',
+        dataType: 'json'
+      });
+    }
+    $(document).ready(function() {
+      $('#make-backstory').on('click', generate_backstory);
+      $('.checkbox').on('click', toggle_checkbox);
+    });
+  </script>
+  </body>
+</html>
