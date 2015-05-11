@@ -13,17 +13,19 @@
       }
       .title {
         color:#CC9900;
-        opacity:0.8;
+      }
+      .checkbox {
+
       }
       .checkbox:hover {
-        background-color: #CC9900;
+        /*background-color: #CC9900;*/
         opacity: 0.6;
       }
       #backstory-response {
         font-weight: bold;
       }
       .story-headline {
-        font-size: 18px;
+        font-size: 22px;
       }
     </style>
 
@@ -79,7 +81,7 @@
             <span><strong>{{ stories|length }}</strong> stories</span><br/><br/><hr/>
           {% endif %}
           {% for story in stories %}
-            <div class="checkbox">
+            <div class="checkbox" class="col-sm-9">
               <input type="checkbox" style="visibility:hidden;">
               <div>
                 <span class="story-date"><i>{{ story.publish_date_formatted }}</i></span><br/>

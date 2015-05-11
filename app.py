@@ -27,9 +27,9 @@ def home():
     else:
         query_url = request.args['query-url']
         spider_limit = request.args.get('spider-level', 'all')
-        args['stories'] = CustomStoryDatabase(CURRENT_DB).getSpiderRows(query_url, inlinks_only=False, spider_limit=spider_limit)
+        args['stories'] = CustomStoryDatabase(CURRENT_DB).getSpiderRows(query_url, spider_limit=spider_limit)
         # Sort by publish date, puts the stories without dates at the top
-        args['stories'] = filter(lambda s: s.get('headline'), args['stories'])
+        args['stories'] = filter(lambda s: s.get('headline') and s.get('publish_date'), args['stories'])
         args['stories'] = sorted(args['stories'], key=lambda s: s.get('publish_date'))
     return render_template('index.html', **args)
 
