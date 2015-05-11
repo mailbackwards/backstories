@@ -5,10 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Backstori.es</title>
+    <link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
+      #content {
+        font-family: 'Architects Daughter', cursive;
+      }
+      .title {
+        color:#CC9900;
+        opacity:0.8;
+      }
       .checkbox:hover {
-        background-color: #eeeeee;
+        background-color: #CC9900;
+        opacity: 0.6;
       }
       #backstory-response {
         font-weight: bold;
@@ -30,7 +39,7 @@
   <div id="content" class="container">
     <div class="row-fluid">
       <div class="span12">
-        <h1>Backstori.es</h1>
+        <h1 class="title">Backstori.es</h1>
 
 <!--         <h4>Crawl link</h4>
         <div class="searchbox">
@@ -102,7 +111,7 @@
         $(this).css('background-color', '#ffffff');
         $(this).children('input').prop('checked', false);
       } else {
-        $(this).css('background-color', '#a9a9a9');
+        $(this).css('background-color', '#CC9900');
         $(this).children('input').prop('checked', true);
       }
     }
