@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 import hashlib
 import networkx as nx
@@ -5,12 +6,13 @@ import networkx as nx
 from extractor import LinkExtractor
 from storage import MongoStoryDatabase
 
-DB_NAME = 'recap'
+DEFAULT_DB_NAME = 'recap-thailand'
+DEFAULT_SOURCE_URL = 'http://america.aljazeera.com'
 
 class LinkSpider(object):
 
     def __init__(self, db_name=None):
-        db_name = db_name or DB_NAME
+        db_name = db_name or DEFAULT_DB_NAME
         self.db = CustomStoryDatabase(db_name)
         self.hrefs = set()
         self.queue = set()
@@ -64,14 +66,28 @@ class CustomStoryDatabase(MongoStoryDatabase):
                 graph.add_edge(node, linknode, link)
         return graph
 
-    def getSpiderRows(self, srcnode, query=None, inlinks_only=True):
+    def getSpiderRows(self, srcnode, query=None, inlinks_only=True, spider_limit='all'):
         graph = self.buildGraph(query, inlinks_only)
         results = []
         for node, data in graph.nodes_iter(data=True):
             data['path_length'] = nx.algorithms.shortest_path_length(graph, srcnode, node)
-            data['degree'] = graph.degree(node)
+            if spider_limit != 'all' and data['path_length'] > int(spider_limit):
+                continue
+            data['degree'] = graph.in_degree(node)
             data['node'] = node
-            print data
             data['publish_date_formatted'] = reformat_date(data.get('publish_date'))
             results.append(data)
         return results
+
+if __name__ == "__main__":
+    try:
+        args = sys.argv[1:]
+    except:
+        print 'We need a URL'
+    while len(args) < 3:
+        args.append(None)
+    starting_url = args[0]
+    db_name = args[1] or DEFAULT_DB_NAME
+    source_url = args[2] or DEFAULT_SOURCE_URL
+
+    LinkSpider(db_name).spider_from(starting_url, source_url=source_url)

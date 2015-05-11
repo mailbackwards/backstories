@@ -32,37 +32,58 @@
       <div class="span12">
         <h1>Backstori.es</h1>
 
-        <h4>Crawl link</h4>
+<!--         <h4>Crawl link</h4>
         <div class="searchbox">
           <form action="" name="search">
             Pick a URL to start crawling: <input type="search" name="ingest-url">
             <input type="submit">
           </form>
-        </div>
+        </div> -->
 
-        <h4>Make backstory</h4>
         <div class="searchbox">
           <form action="" name="search">
             Pick a URL to make a backstory from: <input type="search" name="query-url">
-            <input type="submit">
+            Spider level: 
+            <select name="spider-level">
+              <option value="all">(all)</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+            <input type="submit"> 
           </form>
         </div>
 
         <br />
 
-        {% for story in stories %}
-          <div class="checkbox">
-            <input type="checkbox" value="">
-            <div>
-              <span class="story-date"><i>{{ story.publish_date_formatted }}</i></span><br/>
-              <span class="story-headline"><strong>{{ story.headline }}</strong></span><br/>
-              <span class="story-lede">{{ story.lede }}</span><br/><br/>
-              <i>(Spider level: <strong>{{ story.path_length }}</strong>; Degree: <strong>{{ story.degree }}</strong>)</i><br/>
-              <img class="story-img" src="{{ story.img_url }}" height="200" width="300" />
-            </div>
-          </div><br/>
-          <hr />
+        {% for error in errors %}
+          <div class="alert alert-danger">{{ error }}</div>
         {% endfor %}
+
+        <div class="story-container">
+          {% if stories %}
+            <span><strong>{{ stories|length }}</strong> stories</span><br/><br/><hr/>
+          {% endif %}
+          {% for story in stories %}
+            <div class="checkbox">
+              <input type="checkbox" style="visibility:hidden;">
+              <div>
+                <span class="story-date"><i>{{ story.publish_date_formatted }}</i></span><br/>
+                <span class="story-headline"><strong>{{ story.headline }}</strong></span><br/>
+                <span class="story-lede">{{ story.lede }}</span><br/><br/>
+                <i>(Spider level: <strong>{{ story.path_length }}</strong>; Degree: <strong>{{ story.degree }}</strong>) (<a href="{{ story.url }}" target="_blank">link</a>)</i><br/>
+                <img class="story-img" src="{{ story.img_url }}" height="200" width="300" />
+              </div>
+            </div><br/>
+            <hr />
+          {% endfor %}
+
+        </div>
 
         <input type="submit" value="Make backstory" class="btn btn-default" id="make-backstory"></input>
         <br/><br/>
@@ -109,7 +130,7 @@
         url: "http://localhost:5000/stupefy.json",
         data: JSON.stringify({'stories': checkedStories}),
         success: function(data) {
-          $('#backstory-response').html(JSON.stringify(data));
+          $('#backstory-response').html('Success! Check the video status <a href="http://localhost:5000/stupestatus.json?key='+data['key']+'">here</a>');
         },
         contentType: 'application/json;charset=UTF-8',
         dataType: 'json'

@@ -15,7 +15,7 @@ def is_valid_weblink(attr):
 
 def is_inlink(target_url, src_urls):
 	"""Checks the target_url domain against all possible src_urls, and returns true if there are any domain matches."""
-	print 'Checking %s' % target_url
+	#print 'Checking %s' % target_url
 	if not isinstance(src_urls, list):
 		src_urls = [src_urls]
 	if target_url.startswith('http') or target_url.startswith('//'):

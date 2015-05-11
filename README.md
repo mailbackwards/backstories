@@ -15,6 +15,12 @@ Backstori.es lets you semi-automatically generate a background explainer video f
 * `python app.py` starts the server
 * navigate to `localhost:5000`
 
+## Crawling
+
+* `python spider.py <START_URL> <DB_NAME> <SOURCE_URL>`
+
+*(`DB_NAME` and `SOURCE_URL` default to the variable set in `spider.py`)*
+
 ## Endpoints
 
 * `/` - leads to homepage

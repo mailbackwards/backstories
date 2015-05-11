@@ -10,20 +10,27 @@ from stupeflix import StupeflixApi
 app = Flask(__name__)
 cors = CORS(app)
 
-DBS = ['recap', 'recap-nigeria', 'recap-smuggle', 'recap-thailand']
-CURRENT_DB = 'recap-thailand'
+DBS = ['recap', 'recap-nigeria', 'recap-smuggle', 'recap-thailand', 
+       'bs-climate-treaty', 'bs-shell-arctic', 'bs-yemen', 'bs-california-water']
+CURRENT_DB = 'bs-yemen'
 DEFAULT_AUDIO = None
 
 @app.route("/")
 def home():
-    args = {'stories': []}
-    if 'query-url' in request.args:
-        query_term = request.args['query-url']
-        args['stories'] = CustomStoryDatabase(CURRENT_DB).getSpiderRows(query_term)
+    args = {'stories': [], 'errors': []}
+    if not 'query-url' in request.args:
+        # Just visiting the homepage, not entering a form
+        pass
+    elif not request.args['query-url']:
+        # The form has bad input
+        args['errors'].append('No URL entered above.')
+    else:
+        query_url = request.args['query-url']
+        spider_limit = request.args.get('spider-level', 'all')
+        args['stories'] = CustomStoryDatabase(CURRENT_DB).getSpiderRows(query_url, inlinks_only=False, spider_limit=spider_limit)
         # Sort by publish date, puts the stories without dates at the top
+        args['stories'] = filter(lambda s: s.get('headline'), args['stories'])
         args['stories'] = sorted(args['stories'], key=lambda s: s.get('publish_date'))
-    elif 'ingest-url' in request.args:
-        ingest_term = request.args['ingest-url']
     return render_template('index.html', **args)
 
 @app.route("/stupefy.json", methods=["POST"])
