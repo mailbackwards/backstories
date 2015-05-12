@@ -10,27 +10,33 @@ from stupeflix import StupeflixApi
 app = Flask(__name__)
 cors = CORS(app)
 
-DBS = ['recap', 'recap-nigeria', 'recap-smuggle', 'recap-thailand', 
-       'bs-climate-treaty', 'bs-shell-arctic', 'bs-yemen', 'bs-california-water']
-CURRENT_DB = 'bs-yemen'
+# These are key, value pairs that correspond to {<DB_NAME>: <START_URL>}
+DBS = {
+    #'recap':                'http://america.aljazeera.com/articles/2015/5/3/Baltimore-protests-curfew.html',
+    'recap-nigeria':        'http://america.aljazeera.com/articles/2015/5/2/nigeria-says-234-more-females-rescued-from-Boko-Haram.html',
+    'recap-thailand':       'http://america.aljazeera.com/articles/2015/5/2/26-bodies-at-suspected-thailand-trafficking-camp.html',
+    'bs-climate-theory':    'http://america.aljazeera.com/articles/2015/4/2/UN-climate-change-emissions.html',
+    'bs-shell-arctic':      'http://america.aljazeera.com/articles/2015/5/5/shells-arctic-return-faces-hurdle-at-seattle-port.html',
+    'bs-yemen':             'http://america.aljazeera.com/articles/2015/5/10/houthis-agree-to-five-day-cease-fire.html',
+    'bs-california-water':  'http://america.aljazeera.com/articles/2015/5/6/california-adopts-unprecedented-water-cuts.html'
+}
 DEFAULT_AUDIO = None
 
 @app.route("/")
 def home():
-    args = {'stories': [], 'errors': []}
-    if not 'query-url' in request.args:
-        # Just visiting the homepage, not entering a form
-        pass
-    elif not request.args['query-url']:
-        # The form has bad input
-        args['errors'].append('No URL entered above.')
-    else:
-        query_url = request.args['query-url']
-        spider_limit = request.args.get('spider-level', 'all')
-        args['stories'] = CustomStoryDatabase(CURRENT_DB).getSpiderRows(query_url, spider_limit=spider_limit)
-        # Sort by publish date, puts the stories without dates at the top
-        args['stories'] = filter(lambda s: s.get('headline') and s.get('publish_date'), args['stories'])
-        args['stories'] = sorted(args['stories'], key=lambda s: s.get('publish_date'))
+    args = {'stories': [], 'errors': [], 'dbs': DBS.keys()}
+    if 'db-name' in request.args:
+        db_name = request.args['db-name']
+        try:
+            query_url = DBS[db_name]
+        except KeyError:
+            errors.append('Invalid db_name, set it in app.py')
+        else:
+            spider_limit = request.args.get('spider-level', 'all')
+            args['stories'] = CustomStoryDatabase(db_name).getSpiderRows(query_url, spider_limit=spider_limit)
+            # Sort by publish date, puts the stories without dates at the top
+            args['stories'] = filter(lambda s: s.get('headline') and s.get('publish_date') and s.get('path_length') != 0, args['stories'])
+            args['stories'] = sorted(args['stories'], key=lambda s: s.get('publish_date'))
     return render_template('index.html', **args)
 
 @app.route("/stupefy.json", methods=["POST"])

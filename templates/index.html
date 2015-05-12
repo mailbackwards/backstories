@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Backstori.es</title>
     <link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
       #content {
-        font-family: 'Architects Daughter', cursive;
+        font-family: 'Pontano Sans', sans-serif;
       }
       .title {
         color:#CC9900;
+        font-family: 'Architects Daughter', cursive;
       }
       .checkbox {
-
+        border:10px;
+        margin: 10px 10px 10px 10px;
       }
       .checkbox:hover {
         /*background-color: #CC9900;*/
@@ -26,6 +29,8 @@
       }
       .story-headline {
         font-size: 22px;
+        /*color: #CC9900;*/
+        font-family: 'Architects Daughter', cursive;
       }
     </style>
 
@@ -51,24 +56,26 @@
           </form>
         </div> -->
 
-        <div class="searchbox">
-          <form action="" name="search">
-            Pick a URL to make a backstory from: <input type="search" name="query-url">
-            Spider level: 
-            <select name="spider-level">
-              <option value="all">(all)</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
+        <form role="form" class="form-inline" method="GET" action="">
+          <div class="form-group">
+            <label for="db-name">Select database:</label>
+            <select class="form-control" id="db-name" name="db-name">
+              {% for db in dbs %}
+                <option value="{{db}}">{{db}}</option>
+              {% endfor %}
             </select>
-            <input type="submit"> 
-          </form>
-        </div>
+          </div>
+          <div class="form-group">
+            <label for="spider-level">Spider level:</label>
+            <select class="form-control" id="spider-level" name="spider-level">
+              <option value="all">(all)</option>
+              {% for val in range(8) %}
+                <option value="{{val+1}}">{{val+1}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
 
         <br />
 
@@ -87,7 +94,7 @@
                 <span class="story-date"><i>{{ story.publish_date_formatted }}</i></span><br/>
                 <span class="story-headline"><strong>{{ story.headline }}</strong></span><br/>
                 <span class="story-lede">{{ story.lede }}</span><br/><br/>
-                <i>(Spider level: <strong>{{ story.path_length }}</strong>; Degree: <strong>{{ story.degree }}</strong>) (<a href="{{ story.url }}" target="_blank">link</a>)</i><br/>
+                <i>(Spider level: <strong>{{ story.path_length }}</strong>; Degree: <strong>{{ story.degree }}</strong>) (<strong><a href="{{ story.url }}" target="_blank">link</a></strong>)</i><br/>
                 <img class="story-img" src="{{ story.img_url }}" height="200" width="300" />
               </div><br/>
             <hr />
