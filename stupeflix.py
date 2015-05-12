@@ -40,13 +40,20 @@ class StupeflixApi(object):
 	def create_video(self, stories):
 		definition = ""
 		for story in stories:
-			definition += "<image filename='%s'><track type='caption'><text>%s</text></track></image>" % (story['img'], story['headline'])
+			# Display the text at a variable rate: 2.5 words per second
+
+			duration = float(len(story['headline'].split(' '))) / 2.0
+			# definition += "<image filename='%s' duration='2.5'><track type='caption'><text>%s</text></track></image>" % (
+			# 				story['img'], story['date'])
+			definition += "<image filename='%s' duration='%.1f'><track type='caption'><text>%s</text></track></image>" % (
+							story['img'], duration, story['headline'])
+		full_definition = self.pre_boiler + definition + self.post_boiler
 
 		endpoint = 'create'
 		tasks = {
 			'tasks': {
 				'task_name': 'video.create',
-				'definition': self.pre_boiler + definition + self.post_boiler
+				'definition': full_definition
 			}
 		}
 		return self._call('POST', endpoint, tasks)
@@ -55,20 +62,3 @@ class StupeflixApi(object):
 		endpoint = 'status'
 		tasks = {'tasks': key}
 		return self._call('GET', endpoint, tasks)
-
-
-def stupefy(stories):
-    stories = filter(lambda s: s.get('img_url') is not None and s.get('headline') is not None, stories)
-    api = StupeflixApi()
-    print 'Creating video...'
-    video = api.create_video(stories)
-    key = video[0]['key']
-    resp = None
-    while True:
-        print 'Waiting...'
-        time.sleep(8)
-        resp = api.status(key)
-        if resp[0]['status'] == 'success':
-            print 'Done!'
-            break
-    return resp
