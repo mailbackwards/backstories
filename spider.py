@@ -5,14 +5,13 @@ import networkx as nx
 
 from extractor import LinkExtractor
 from storage import MongoStoryDatabase
+from conf import DBS, DEFAULT_SOURCE_URL
 
-DEFAULT_DB_NAME = 'recap-thailand'
-DEFAULT_SOURCE_URL = 'http://america.aljazeera.com'
 
 class LinkSpider(object):
 
-    def __init__(self, db_name=None):
-        db_name = db_name or DEFAULT_DB_NAME
+    def __init__(self, db_name):
+        db_name = db_name
         self.db = CustomStoryDatabase(db_name)
         self.hrefs = set()
         self.queue = set()

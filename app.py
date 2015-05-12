@@ -4,23 +4,12 @@ import sys
 from flask import Flask, render_template, request, jsonify
 from flask.ext.cors import CORS
 
-from spider import LinkSpider, CustomStoryDatabase
+from spider import CustomStoryDatabase
 from stupeflix import StupeflixApi
+from conf import DBS, DEFAULT_AUDIO
 
 app = Flask(__name__)
 cors = CORS(app)
-
-# These are key, value pairs that correspond to {<DB_NAME>: <START_URL>}
-DBS = {
-    #'recap':                'http://america.aljazeera.com/articles/2015/5/3/Baltimore-protests-curfew.html',
-    'recap-nigeria':        'http://america.aljazeera.com/articles/2015/5/2/nigeria-says-234-more-females-rescued-from-Boko-Haram.html',
-    'recap-thailand':       'http://america.aljazeera.com/articles/2015/5/2/26-bodies-at-suspected-thailand-trafficking-camp.html',
-    'bs-climate-theory':    'http://america.aljazeera.com/articles/2015/4/2/UN-climate-change-emissions.html',
-    'bs-shell-arctic':      'http://america.aljazeera.com/articles/2015/5/5/shells-arctic-return-faces-hurdle-at-seattle-port.html',
-    'bs-yemen':             'http://america.aljazeera.com/articles/2015/5/10/houthis-agree-to-five-day-cease-fire.html',
-    'bs-california-water':  'http://america.aljazeera.com/articles/2015/5/6/california-adopts-unprecedented-water-cuts.html'
-}
-DEFAULT_AUDIO = None
 
 @app.route("/")
 def home():

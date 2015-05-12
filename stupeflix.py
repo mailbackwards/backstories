@@ -1,10 +1,8 @@
-import os
 import requests
 import json
 import time
 
-API_KEY = os.environ.get('STUPEFLIX_API_KEY')
-API_SECRET = os.environ.get('STUPEFLIX_API_SECRET')
+from conf import STUPEFLIX_API_KEY, STUPEFLIX_API_SECRET
 
 class StupeflixApi(object):
 	base_url = 'https://dragon.stupeflix.com/v2/'
@@ -12,8 +10,8 @@ class StupeflixApi(object):
 	post_boiler = None
 
 	def __init__(self, api_key=None, api_secret=None, theme='tiles', audio=None):
-		self.api_key = api_key or API_KEY
-		self.api_secret = api_secret or API_SECRET
+		self.api_key = api_key or STUPEFLIX_API_KEY
+		self.api_secret = api_secret or STUPEFLIX_API_SECRET
 		self.session = requests.Session()
 		self._set_boiler(theme, audio)
 
@@ -40,8 +38,7 @@ class StupeflixApi(object):
 	def create_video(self, stories):
 		definition = ""
 		for story in stories:
-			# Display the text at a variable rate: 2.5 words per second
-
+			# Display the text at a variable rate: 2 words per second
 			duration = float(len(story['headline'].split(' '))) / 2.0
 			# definition += "<image filename='%s' duration='2.5'><track type='caption'><text>%s</text></track></image>" % (
 			# 				story['img'], story['date'])
