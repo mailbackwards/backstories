@@ -11,15 +11,16 @@ Backstori.es lets you semi-automatically generate a background explainer video f
 
 * `git clone` this repo and cd into it, activate virtualenv if you like
 * `pip install -r requirements.txt` installs everything
-* set `STUPEFLIX_API_KEY` and `STUPEFLIX_API_SECRET` environment variables to your Stupeflix keys (or change them in `stupeflix.py`, but don't re-commit!)
+* set the `STUPEFLIX_API_KEY` and `STUPEFLIX_API_SECRET` environment variables to your Stupeflix keys (or change them in `conf.py`, but don't re-commit!)
 * `python app.py` starts the server
 * navigate to `localhost:5000`
 
-## Crawling
+## Adding Backstories
 
-* `python spider.py <START_URL> <DB_NAME> <SOURCE_URL>`
-
-*(`DB_NAME` and `SOURCE_URL` default to the variable set in `spider.py`)*
+1. go to `conf.py` and find the `DBS` dictionary
+1. add an item to the dictionary where the key is the name of the database you want to create, and the value is the URL to start crawling from, e.g. "'ukraine': 'http://america.aljazeera.com/articles/2015/5/12/nemtsov-report-220-russians-killed-in-ukraine.html'"
+1. to start the crawl, run `python spider.py <DB_NAME>`
+1. to access the results, find them in the dropdown in `localhost:5000`
 
 ## Endpoints
 

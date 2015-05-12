@@ -80,13 +80,13 @@ class CustomStoryDatabase(MongoStoryDatabase):
 
 if __name__ == "__main__":
     try:
-        args = sys.argv[1:]
-    except:
-        print 'We need a URL'
-    while len(args) < 3:
-        args.append(None)
-    starting_url = args[0]
-    db_name = args[1] or DEFAULT_DB_NAME
-    source_url = args[2] or DEFAULT_SOURCE_URL
+        db_name = sys.argv[1]
+    except IndexError:
+        raise AssertionError('No database name provided. Example: python spider.py <db_name>')
+    if db_name in DBS:
+        starting_url = DBS[db_name]
+    else:
+        raise AssertionError('Database "%s" is not defined in conf.py.')
+    source_url = sys.argv[2] if len(sys.argv)>2 else DEFAULT_SOURCE_URL
 
     LinkSpider(db_name).spider_from(starting_url, source_url=source_url)
