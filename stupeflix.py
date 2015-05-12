@@ -35,16 +35,22 @@ class StupeflixApi(object):
 								 params=params, data=json.dumps(data), headers=headers)
 		return r.json()
 
-	def create_video(self, stories):
+	def create_video(self, stories, print_only=False):
 		definition = ""
 		for story in stories:
 			# Display the text at a variable rate: 2 words per second
-			duration = float(len(story['headline'].split(' '))) / 2.0
-			# definition += "<image filename='%s' duration='2.5'><track type='caption'><text>%s</text></track></image>" % (
-			# 				story['img'], story['date'])
-			definition += "<image filename='%s' duration='%.1f'><track type='caption'><text>%s</text></track></image>" % (
-							story['img'], duration, story['headline'])
+			headline_duration = float(len(story['headline'].split(' '))) / 2.2
+			definition += "<text duration='0.1'>%s</text><transition type='crossfade' duration='0.1'/>" % story['date']
+			definition += "<image filename='%s' duration='%.1f'><track type='caption'><text>%s</text></track></image><transition type='crossfade' duration='0.1'/>" % (
+							story['img'], headline_duration, story['headline'])
+			# lede_duration = float(len(story['lede'].split(' '))) / 2.5
+			# definition += "<image filename='%s' duration='%.1f'><track type='caption'><text>%s</text></track></image><transition type='crossfade' duration='0.1'/>" % (
+			# 				story['img'], lede_duration, story['lede'])
 		full_definition = self.pre_boiler + definition + self.post_boiler
+
+		if print_only:
+			print full_definition
+			return
 
 		endpoint = 'create'
 		tasks = {
